@@ -3,26 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Monitoring Konstruksi - Dinas PRKPCK</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f6f9; }
-        .header { background-color: #003366; color: white; padding: 15px; text-align: center; border-radius: 5px; }
-        .container { margin-top: 20px; display: flex; flex-direction: column; gap: 20px; }
-        iframe { width: 100%; height: 600px; border: none; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    </style>
+    <title>SIMPROK - Dinas PRKPCK Jatim</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
+<body class="bg-slate-50 font-sans text-slate-800">
 
-    <div class="header">
-        <h2>Sistem Monitoring Konstruksi Gedung Negara Grahadi</h2>
-        <p>Dinas PRKPCK Provinsi Jawa Timur</p>
+    <div class="flex h-screen overflow-hidden">
+        <div class="w-64 bg-slate-900 text-white flex flex-col hidden md:flex">
+            <div class="p-5 bg-slate-950 font-bold text-xl tracking-wider flex items-center gap-2 text-amber-500">
+                <i data-lucide="hard-hat"></i> SIMPROK
+            </div>
+            <div class="p-4 text-xs uppercase text-slate-500 font-semibold">Menu Utama</div>
+            <nav class="flex-1 px-3 space-y-1">
+                <button onclick="switchTab('home')" id="btn-home" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg bg-amber-500 text-slate-950 transition-colors">
+                    <i data-lucide="layout-dashboard"></i> Dashboard & Home
+                </button>
+                <button onclick="switchTab('laporan')" id="btn-laporan" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">
+                    <i data-lucide="file-text"></i> Laporan & Verifikasi
+                </button>
+            </nav>
+            <div class="p-4 border-t border-slate-800 text-xs text-slate-400 text-center">
+                Dinas PRKPCK Prov. Jatim &copy; 2026
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm sticky top-0 z-10">
+                <div>
+                    <h1 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sistem Monitoring Progress Konstruksi</h1>
+                    <p class="text-lg font-bold text-slate-800">Proyek Gedung Negara Grahadi</p>
+                </div>
+                <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-medium text-slate-600">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sistem Terhubung Cloud
+                </div>
+            </header>
+
+            <main id="content-home" class="p-6 space-y-6 block">
+                <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-md">
+                    <h2 class="text-2xl font-bold mb-2">Selamat Datang di SIMPROK</h2>
+                    <p class="text-slate-300 text-sm max-w-2xl">Platform berbasis low-code untuk efisiensi birokrasi, akuntabilitas data geotagging pengawas, dan visualisasi Kurva S real-time dinas.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-slate-400 font-medium">Realisasi Fisik</p>
+                            <h3 class="text-2xl font-bold text-slate-800">42.50%</h3>
+                        </div>
+                        <div class="p-3 rounded-lg bg-blue-50 text-blue-600"><i data-lucide="activity"></i></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-slate-400 font-medium">Rencana Akumulatif</p>
+                            <h3 class="text-2xl font-bold text-slate-800">45.00%</h3>
+                        </div>
+                        <div class="p-3 rounded-lg bg-amber-50 text-amber-600"><i data-lucide="calendar"></i></div>
+                    </div>
+                    <div class="bg-red-50 p-5 rounded-xl border border-red-200 shadow-xs flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-red-600 font-medium">Deviasi Progres</p>
+                            <h3 class="text-2xl font-bold text-red-700">-2.50% (Kritis)</h3>
+                        </div>
+                        <div class="p-3 rounded-lg bg-red-100 text-red-700"><i data-lucide="alert-triangle"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+                    <div class="mb-4">
+                        <h3 class="font-bold text-slate-800">Visualisasi Grafik Kurva S</h3>
+                        <p class="text-xs text-slate-400">Membandingkan garis target rencana dengan realisasi lapangan</p>
+                    </div>
+                    <div class="h-80 w-full">
+                        <canvas id="kurvaSChart"></canvas>
+                    </div>
+                </div>
+            </main>
+
+            <main id="content-laporan" class="p-6 space-y-6 hidden">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-lg">Log Dokumentasi & Validasi Laporan Lapangan</h3>
+                            <p class="text-xs text-slate-400">Daftar unduhan PDF, penanda waktu otomatis, koordinat GPS, dan status approval dinas</p>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-400 text-xs uppercase font-semibold bg-slate-50">
+                                    <th class="p-4">Minggu Ke</th>
+                                    <th class="p-4">Tanggal & Waktu (Time-Stamp)</th>
+                                    <th class="p-4">Lokasi (Geotagging)</th>
+                                    <th class="p-4">Dokumentasi PDF</th>
+                                    <th class="p-4">Status Verifikasi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm text-slate-600 divide-y divide-slate-100">
+                                <tr>
+                                    <td class="p-4 font-semibold text-slate-800">Minggu 1</td>
+                                    <td class="p-4">05 Juni 2026, 15:30 WIB</td>
+                                    <td class="p-4 text-indigo-600 font-mono text-xs">-7.2654, 112.7483 (Grahadi)</td>
+                                    <td class="p-4">
+                                        <a href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 font-medium rounded-md border border-red-200 hover:bg-red-100 transition-colors text-xs">
+                                            <i data-lucide="file-text" class="w-4 h-4"></i> Unduh Laporan.pdf
+                                        </a>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                            <i data-lucide="check-circle" class="w-3 h-3"></i> Terverifikasi KPA
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-semibold text-slate-800">Minggu 2</td>
+                                    <td class="p-4">12 Juni 2026, 16:12 WIB</td>
+                                    <td class="p-4 text-indigo-600 font-mono text-xs">-7.2654, 112.7481 (Grahadi)</td>
+                                    <td class="p-4">
+                                        <a href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 font-medium rounded-md border border-red-200 hover:bg-red-100 transition-colors text-xs">
+                                            <i data-lucide="file-text" class="w-4 h-4"></i> Unduh Laporan.pdf
+                                        </a>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                            <i data-lucide="check-circle" class="w-3 h-3"></i> Terverifikasi KPA
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-semibold text-slate-800">Minggu 3</td>
+                                    <td class="p-4">19 Juni 2026, 14:05 WIB</td>
+                                    <td class="p-4 text-indigo-600 font-mono text-xs">-7.2655, 112.7484 (Grahadi)</td>
+                                    <td class="p-4">
+                                        <a href="#" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 font-medium rounded-md border border-red-200 hover:bg-red-100 transition-colors text-xs">
+                                            <i data-lucide="file-text" class="w-4 h-4"></i> Unduh Laporan.pdf
+                                        </a>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                            <i data-lucide="clock" class="w-3 h-3"></i> Menunggu Verifikasi
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 
-    <div class="container">
-        <!-- Embed Google Sheets Rekapitulasi / Kurva S Anda di sini -->
-        <h3>Grafik Kurva S & Data Progres Real-Time</h3>
-        <iframe src="PASTIKAN_LINK_EMBED_GOOGLE_SHEETS_ATAU_DASHBOARD_ANDA_DI_SINI"></iframe>
-    </div>
+    <script>
+        // 1. Inisialisasi Ikon Lucide
+        lucide.createIcons();
 
+        // 2. Fungsi Switch Tab (Navigasi Halaman)
+        function switchTab(tabName) {
+            const homeContent = document.getElementById('content-home');
+            const laporanContent = document.getElementById('content-laporan');
+            const btnHome = document.getElementById('btn-home');
+            const btnLaporan = document.getElementById('btn-laporan');
+
+            if (tabName === 'home') {
+                homeContent.classList.replace('hidden', 'block');
+                laporanContent.classList.replace('block', 'hidden');
+                btnHome.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg bg-amber-500 text-slate-950 transition-colors";
+                btnLaporan.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors";
+            } else {
+                laporanContent.classList.replace('hidden', 'block');
+                homeContent.classList.replace('block', 'hidden');
+                btnLaporan.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg bg-amber-500 text-slate-950 transition-colors";
+                btnHome.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors";
+            }
+        }
+
+        // 3. Konfigurasi Grafik Kurva S Menggunakan Chart.js
+        const ctx = document.getElementById('kurvaSChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4', 'Minggu 5', 'Minggu 6'],
+                datasets: [
+                    {
+                        label: 'Kurva S Rencana (%)',
+                        data: [10, 25, 45, 60, 80, 100],
+                        borderColor: '#f59e0b', // Warna Amber/Kuning
+                        backgroundColor: 'transparent',
+                        borderWidth: 3,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Realisasi Lapangan (%)',
+                        data: [12, 23, 42.5], // Baru sampai minggu 3 sesuai data tabel
+                        borderColor: '#3b82f6', // Warna Biru
+                        backgroundColor: 'transparent',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        spanGaps: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: 'Persentase Kumulatif (%)' }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
