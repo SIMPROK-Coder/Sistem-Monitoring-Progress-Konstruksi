@@ -45,49 +45,48 @@
                     <h1 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sistem Monitoring Progress Konstruksi</h1>
                     <p class="text-lg font-bold text-slate-800">Proyek Gedung Negara Grahadi</p>
                 </div>
-                <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full text-xs font-medium text-slate-600">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sistem Terhubung Cloud
-                </div>
+                <button onclick="resetData()" class="text-xs bg-slate-100 hover:bg-red-50 hover:text-red-600 px-3 py-1.5 rounded-lg text-slate-500 transition-colors">
+                    Reset Simulasi Data
+                </button>
             </header>
 
             <!-- TAB CONTENT: HOME / DASHBOARD -->
             <main id="content-home" class="p-6 space-y-6 block">
-                <!-- Banner Pengantar -->
                 <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-md">
                     <h2 class="text-2xl font-bold mb-2">Selamat Datang di SIMPROK</h2>
-                    <p class="text-slate-300 text-sm max-w-2xl">Platform berbasis low-code untuk efisiensi birokrasi, akuntabilitas data geotagging pengawas, dan visualisasi Kurva S real-time dinas.</p>
+                    <p class="text-slate-300 text-sm max-w-2xl">Platform interaktif untuk efisiensi birokrasi, akuntabilitas data geotagging pengawas, dan visualisasi Kurva S secara real-time.</p>
                 </div>
 
-                <!-- Scorecard / KPI Metrics (Early Warning System) -->
+                <!-- KPI Metrics -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-slate-400 font-medium">Realisasi Fisik</p>
-                            <h3 class="text-2xl font-bold text-slate-800">42.50%</h3>
+                            <p class="text-sm text-slate-400 font-medium">Realisasi Fisik Saat Ini</p>
+                            <h3 id="kpi-realisasi" class="text-2xl font-bold text-slate-800">0.00%</h3>
                         </div>
                         <div class="p-3 rounded-lg bg-blue-50 text-blue-600"><i data-lucide="activity"></i></div>
                     </div>
                     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-slate-400 font-medium">Rencana Akumulatif</p>
+                            <p class="text-sm text-slate-400 font-medium">Target Rencana (W3)</p>
                             <h3 class="text-2xl font-bold text-slate-800">45.00%</h3>
                         </div>
                         <div class="p-3 rounded-lg bg-amber-50 text-amber-600"><i data-lucide="calendar"></i></div>
                     </div>
-                    <div class="bg-red-50 p-5 rounded-xl border border-red-200 shadow-xs flex items-center justify-between">
+                    <div id="card-deviasi" class="p-5 rounded-xl border shadow-xs flex items-center justify-between transition-colors">
                         <div>
-                            <p class="text-sm text-red-600 font-medium">Deviasi Progres</p>
-                            <h3 class="text-2xl font-bold text-red-700">-2.50% (Kritis)</h3>
+                            <p class="text-sm font-medium">Deviasi Progres</p>
+                            <h3 id="kpi-deviasi" class="text-2xl font-bold">0.00%</h3>
                         </div>
-                        <div class="p-3 rounded-lg bg-red-100 text-red-700"><i data-lucide="alert-triangle"></i></div>
+                        <div class="p-3 rounded-lg bg-white/50"><i data-lucide="alert-triangle"></i></div>
                     </div>
                 </div>
 
                 <!-- Grafik Kurva S -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
                     <div class="mb-4">
-                        <h3 class="font-bold text-slate-800">Visualisasi Grafik Kurva S</h3>
-                        <p class="text-xs text-slate-400">Membandingkan garis target rencana dengan realisasi lapangan</p>
+                        <h3 class="font-bold text-slate-800">Visualisasi Grafik Kurva S Dinamis</h3>
+                        <p class="text-xs text-slate-400">Garis realisasi (Biru) akan otomatis bergeser mengikuti input data yang Anda simpan</p>
                     </div>
                     <div class="h-80 w-full">
                         <canvas id="kurvaSChart"></canvas>
@@ -105,82 +104,77 @@
                         <p class="text-xs text-slate-400">Entri data progres berkala pengawas lapangan proyek Gedung Negara Grahadi</p>
                     </div>
 
-                    <form onsubmit="event.preventDefault(); alert('Laporan berhasil disimpan (Simulasi)! Data terkirim ke database Cloud.');" class="space-y-5">
+                    <form id="form-laporan" onsubmit="handleFormSubmit(event)" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">Minggu Pelaporan</label>
-                                <select class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-amber-500">
-                                    <option>Minggu 1</option>
-                                    <option>Minggu 2</option>
-                                    <option>Minggu 3</option>
-                                    <option>Minggu 4</option>
-                                    <option>Minggu 5</option>
+                                <select id="inp-minggu" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-amber-500">
+                                    <option value="1">Minggu 1</option>
+                                    <option value="2">Minggu 2</option>
+                                    <option value="3">Minggu 3</option>
+                                    <option value="4">Minggu 4</option>
+                                    <option value="5">Minggu 5</option>
+                                    <option value="6">Minggu 6</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">Tanggal Pengawasan</label>
-                                <input type="date" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-amber-500">
+                                <input type="date" id="inp-tanggal" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-amber-500">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">Progres Fisik Riil (%)</label>
-                                <input type="number" step="0.01" placeholder="Contoh: 12.50" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-amber-500">
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">Progres Fisik Kumulatif (%)</label>
+                                <input type="number" step="0.01" min="0" max="100" id="inp-progres" required placeholder="Contoh: 42.50" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-amber-500">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">Koordinat Geotagging (GPS)</label>
-                                <input type="text" placeholder="Contoh: -7.2654, 112.7483" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono text-indigo-600 focus:outline-amber-500">
+                                <input type="text" id="inp-gps" required placeholder="Contoh: -7.2654, 112.7483" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono text-indigo-600 focus:outline-amber-500">
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">Unggah Dokumentasi (Berkas PDF)</label>
-                            <div class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer relative">
-                                <input type="file" accept=".pdf" class="absolute inset-0 opacity-0 cursor-pointer">
+                            <div class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center hover:bg-slate-50 transition-colors relative">
+                                <input type="file" accept=".pdf" id="inp-file" class="absolute inset-0 opacity-0 cursor-pointer">
                                 <i data-lucide="file-up" class="mx-auto text-slate-400 mb-2"></i>
-                                <p class="text-sm font-medium text-slate-700">Pilih file PDF atau seret ke sini</p>
-                                <p class="text-xs text-slate-400 mt-1">Maksimal ukuran file 10MB</p>
+                                <p id="file-label" class="text-sm font-medium text-slate-700">Pilih file PDF atau seret ke sini</p>
+                                <p class="text-xs text-slate-400 mt-1">File simulasi pengawasan teknik</p>
                             </div>
                         </div>
 
                         <div class="pt-4 border-t border-slate-100 flex justify-end">
                             <button type="submit" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold rounded-lg text-sm shadow-xs transition-colors flex items-center gap-2">
-                                <i data-lucide="save" class="w-4 h-4"></i> Simpan & Kirim Laporan
+                                <i data-lucide="save" class="w-4 h-4"></i> Simpan & Update Kurva S
                             </button>
                         </div>
                     </form>
                 </div>
             </main>
 
-            <!-- TAB CONTENT: LAPORAN (BAGIAN LOG KOSONG UNTUK UPLOAD SENDIRI) -->
+            <!-- TAB CONTENT: LAPORAN & VERIFIKASI -->
             <main id="content-laporan" class="p-6 space-y-6 hidden">
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
                     <div class="mb-6">
                         <h3 class="font-bold text-slate-800 text-lg">Log Dokumentasi & Validasi Laporan Lapangan</h3>
-                        <p class="text-xs text-slate-400">Daftar unduhan PDF, penanda waktu otomatis, koordinat GPS, dan status approval dinas</p>
+                        <p class="text-xs text-slate-400">Daftar laporan aktif yang telah dimasukkan ke dalam basis data sistem</p>
                     </div>
 
-                    <!-- Tabel Laporan Kosong -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-200 text-slate-400 text-xs uppercase font-semibold bg-slate-50">
                                     <th class="p-4">Minggu Ke</th>
-                                    <th class="p-4">Tanggal & Waktu (Time-Stamp)</th>
+                                    <th class="p-4">Tanggal Pengawasan</th>
+                                    <th class="p-4">Progres</th>
                                     <th class="p-4">Lokasi (Geotagging)</th>
                                     <th class="p-4">Dokumentasi PDF</th>
                                     <th class="p-4">Status Verifikasi</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-sm text-slate-600 divide-y divide-slate-100">
-                                <!-- KOLOM KOSONG: SILAKAN TAMBAHKAN BARIS <tr> DI SINI JIKA INGIN MERILIS LAPORAN BARU -->
-                                <tr id="row-empty-state">
-                                    <td colspan="5" class="p-8 text-center text-slate-400 italic">
-                                        <i data-lucide="folder-open" class="mx-auto mb-2 text-slate-300 w-8 h-8"></i>
-                                        Belum ada data laporan yang diunggah. Silakan tambahkan baris data laporan Anda secara manual pada bagian ini.
-                                    </td>
-                                </tr>
+                            <tbody id="tabel-body-laporan" class="text-sm text-slate-600 divide-y divide-slate-100">
+                                <!-- Data dimasukkan dinamis lewat JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -189,19 +183,195 @@
         </div>
     </div>
 
-    <!-- LOGIKA INTERAKTIF JAVASCRIPT (NAVIGASI & GRAFIK) -->
+    <!-- LOGIKA CORE INTERAKTIF JAVASCRIPT -->
     <script>
-        // 1. Inisialisasi Ikon Lucide
-        lucide.createIcons();
+        // 1. Data Target Rencana Kurva S (Minggu 1 s.d 6)
+        const rencanaData = [10, 25, 45, 60, 80, 100];
+        let realisasiData = [null, null, null, null, null, null];
+        let listLaporan = [];
+        let kurvaChart;
 
-        // 2. Fungsi Switch Tab (Navigasi Halaman Multi-Tab)
+        // 2. Load Data Awal saat Web Dibuka
+        window.onload = function() {
+            lucide.createIcons();
+            initLocalStorageData();
+            renderDashboard();
+            
+            // Pasang pendengar event untuk file upload input
+            document.getElementById('inp-file').addEventListener('change', function(e) {
+                if(e.target.files.length > 0) {
+                    document.getElementById('file-label').innerText = e.target.files[0].name;
+                }
+            });
+        };
+
+        function initLocalStorageData() {
+            const storedLaporan = localStorage.getItem('simprok_laporan');
+            if (storedLaporan) {
+                listLaporan = JSON.parse(storedLaporan);
+            } else {
+                // Default data awal sebagai simulasi pertama agar tidak kosong total
+                listLaporan = [
+                    { minggu: "1", tanggal: "2026-06-05", progres: 12.00, gps: "-7.2654, 112.7483", file: "Laporan_Minggu_1.pdf" },
+                    { minggu: "2", tanggal: "2026-06-12", progres: 23.00, gps: "-7.2655, 112.7481", file: "Laporan_Minggu_2.pdf" }
+                ];
+                localStorage.setItem('simprok_laporan', JSON.stringify(listLaporan));
+            }
+        }
+
+        function renderDashboard() {
+            // Reset array realisasi
+            realisasiData = [null, null, null, null, null, null];
+            
+            // Isi array grafik berdasarkan log laporan terdaftar
+            listLaporan.forEach(item => {
+                const idx = parseInt(item.minggu) - 1;
+                if(idx >= 0 && idx < 6) {
+                    realisasiData[idx] = item.progres;
+                }
+            });
+
+            // Cari progres realisasi terakhir untuk dipasang di KPI Card
+            let progresTerakhir = 0;
+            for(let i = realisasiData.length - 1; i >= 0; i--) {
+                if(realisasiData[i] !== null) {
+                    progresTerakhir = realisasiData[i];
+                    break;
+                }
+            }
+
+            // Hitung Deviasi terhadap Target Rencana Minggu Ke-3 (45%) sebagai basis pelaporan saat ini
+            const targetW3 = 45.00;
+            const deviasi = progresTerakhir - targetW3;
+
+            // Render metrik teks ke elemen HTML
+            document.getElementById('kpi-realisasi').innerText = progresTerakhir.toFixed(2) + "%";
+            const deviasiEl = document.getElementById('kpi-deviasi');
+            const cardDeviasi = document.getElementById('card-deviasi');
+
+            deviasiEl.innerText = (deviasi >= 0 ? "+" : "") + deviasi.toFixed(2) + "% " + (deviasi >= 0 ? "(Aman)" : "(Kritis)");
+            if(deviasi >= 0) {
+                cardDeviasi.className = "bg-emerald-50 p-5 rounded-xl border border-emerald-200 shadow-xs flex items-center justify-between text-emerald-800";
+            } else {
+                cardDeviasi.className = "bg-red-50 p-5 rounded-xl border border-red-200 shadow-xs flex items-center justify-between text-red-800";
+            }
+
+            // Render ulang grafik
+            renderChart();
+            // Render ulang tabel log laporan
+            renderTabelLaporan();
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('kurvaSChart').getContext('2d');
+            
+            if (kurvaChart) { kurvaChart.destroy(); }
+
+            kurvaChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4', 'Minggu 5', 'Minggu 6'],
+                    datasets: [
+                        {
+                            label: 'Kurva S Rencana (%)',
+                            data: rencanaData,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'transparent',
+                            borderWidth: 3,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Realisasi Lapangan Nyata (%)',
+                            data: realisasiData,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                            borderWidth: 3,
+                            tension: 0.2,
+                            fill: true,
+                            spanGaps: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        function renderTabelLaporan() {
+            const tbody = document.getElementById('tabel-body-laporan');
+            tbody.innerHTML = "";
+
+            if(listLaporan.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 italic">Belum ada data laporan.</td></tr>`;
+                return;
+            }
+
+            // Urutkan tabel dari minggu terkecil
+            listLaporan.sort((a,b) => parseInt(a.minggu) - parseInt(b.minggu));
+
+            listLaporan.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-4 font-semibold text-slate-800">Minggu ${item.minggu}</td>
+                    <td class="p-4">${item.tanggal}</td>
+                    <td class="p-4 font-medium text-blue-600">${item.progres.toFixed(2)}%</td>
+                    <td class="p-4 text-indigo-600 font-mono text-xs">${item.gps}</td>
+                    <td class="p-4">
+                        <a href="#" onclick="alert('Membuka file simulasi: ${item.file}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 font-medium rounded-md border border-red-200 hover:bg-red-100 text-xs">
+                            <i data-lucide="file-text" class="w-3.5 h-3.5"></i> ${item.file}
+                        </a>
+                    </td>
+                    <td class="p-4">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                            <i data-lucide="check-circle" class="w-3 h-3"></i> Terverifikasi KPA
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        // 4. Aksi Simpan Form Input Data Baru
+        function handleFormSubmit(e) {
+            const mingguVal = document.getElementById('inp-minggu').value;
+            const tanggalVal = document.getElementById('inp-tanggal').value;
+            const progresVal = parseFloat(document.getElementById('inp-progres').value);
+            const gpsVal = document.getElementById('inp-gps').value;
+            const fileVal = document.getElementById('inp-file').files[0]?.name || "Dokumentasi_Proyek.pdf";
+
+            // Validasi duplikasi input minggu yang sama
+            const targetDuplikat = listLaporan.findIndex(item => item.minggu === mingguVal);
+            if(targetDuplikat !== -1) {
+                listLaporan[targetDuplikat] = { minggu: mingguVal, tanggal: tanggalVal, progres: progresVal, gps: gpsVal, file: fileVal };
+            } else {
+                listLaporan.push({ minggu: mingguVal, tanggal: tanggalVal, progres: progresVal, gps: gpsVal, file: fileVal });
+            }
+
+            // Simpan ke memory internal browser
+            localStorage.setItem('simprok_laporan', JSON.stringify(listLaporan));
+            
+            // Update UI secara instan
+            renderDashboard();
+            alert(`Sukses! Data Minggu ke-${mingguVal} berhasil disimpan ke sistem Cloud internal browser. Kurva S telah diperbarui.`);
+            
+            // Reset form dan arahkan ke halaman Home
+            document.getElementById('form-laporan').reset();
+            document.getElementById('file-label').innerText = "Pilih file PDF atau seret ke sini";
+            switchTab('home');
+        }
+
+        // 5. Fungsi Navigasi Tab Menu
         function switchTab(tabName) {
             const tabs = ['home', 'input', 'laporan'];
-            
             tabs.forEach(t => {
                 const contentEl = document.getElementById(`content-${t}`);
                 const btnEl = document.getElementById(`btn-${t}`);
-                
                 if (t === tabName) {
                     contentEl.classList.replace('hidden', 'block');
                     btnEl.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg bg-amber-500 text-slate-950 transition-colors";
@@ -212,44 +382,14 @@
             });
         }
 
-        // 3. Konfigurasi Grafik Kurva S Menggunakan Chart.js
-        const ctx = document.getElementById('kurvaSChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4', 'Minggu 5', 'Minggu 6'],
-                datasets: [
-                    {
-                        label: 'Kurva S Rencana (%)',
-                        data: [10, 25, 45, 60, 80, 100],
-                        borderColor: '#f59e0b',
-                        backgroundColor: 'transparent',
-                        borderWidth: 3,
-                        tension: 0.3
-                    },
-                    {
-                        label: 'Realisasi Lapangan (%)',
-                        data: [12, 23, 42.5],
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'transparent',
-                        borderWidth: 3,
-                        tension: 0.3,
-                        spanGaps: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        title: { display: true, text: 'Persentase Kumulatif (%)' }
-                    }
-                }
+        // 6. Fungsi Reset Data ke Pengaturan Default
+        function resetData() {
+            if(confirm("Apakah Anda ingin mereset seluruh simulasi input laporan kembali ke data bawaan awal?")) {
+                localStorage.removeItem('simprok_laporan');
+                initLocalStorageData();
+                renderDashboard();
             }
-        });
+        }
     </script>
 </body>
 </html>
